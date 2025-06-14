@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Угадай число</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .game-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+        input {
+            padding: 8px;
+            font-size: 16px;
+            width: 100px;
+            text-align: center;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 18px;
+            min-height: 27px;
+        }
+        #attempts {
+            margin-top: 10px;
+            color: #666;
+        }
+        .restart-btn {
+            background-color: #f44336;
+            margin-top: 20px;
+        }
+        .restart-btn:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <h1>Угадай число</h1>
+    <div class="game-container">
+        <p>Я загадал число от 1 до 10. Попробуй угадать!</p>
+        <div>
+            <input type="number" id="guessInput" min="1" max="10" placeholder="1-10">
+            <button onclick="checkGuess()">Проверить</button>
+        </div>
+        <div id="message"></div>
+        <div id="attempts"></div>
+        <button class="restart-btn" onclick="restartGame()">Начать заново</button>
+    </div>
+    <script>
+        window.onload = function() {
+            // Проверка на сохранение
+            if (!sessionStorage.getItem('secretNumber')) {
+                startNewGame();
+            }
+            updateAttemptsDisplay();
+        };
+        // Начать игру
+        function startNewGame() {
+            const secretNumber = Math.floor(Math.random() * 10) + 1;
+            sessionStorage.setItem('secretNumber', secretNumber);
+            sessionStorage.setItem('attempts', '0');
+            document.getElementById('message').textContent = '';
+            document.getElementById('guessInput').value = '';
+            updateAttemptsDisplay();
+        }
+        // Проверка введенного с клавы
+        function checkGuess() {
+            const guessInput = document.getElementById('guessInput');
+            const messageDiv = document.getElementById('message');
+            // Проверка на "число"
+            if (!guessInput.value) {
+                messageDiv.textContent = 'Пожалуйста, введите число';
+                return;
+            }
+            const guess = parseInt(guessInput.value);
+            const secretNumber = parseInt(sessionStorage.getItem('secretNumber'));
+
+            let attempts = parseInt(sessionStorage.getItem('attempts')) + 1;
+            sessionStorage.setItem('attempts', attempts.toString());
+            updateAttemptsDisplay();
+            // Проверка предположения
+            if (guess === secretNumber) {
+                messageDiv.innerHTML = `Поздравляю! Вы угадали число <strong>${secretNumber}</strong> за ${attempts} попыток!`;
+                guessInput.disabled = true;
+            } else if (guess < secretNumber) {
+                messageDiv.textContent = 'Загаданное число больше';
+            } else {
+                messageDiv.textContent = 'Загаданное число меньше';
+            }
+            guessInput.value = '';
+            guessInput.focus();
+        }
+        function updateAttemptsDisplay() {
+            const attempts = sessionStorage.getItem('attempts') || '0';
+            document.getElementById('attempts').textContent = `Попыток: ${attempts}`;
+        }
+        // Начать игру заново
+        function restartGame() {
+            startNewGame();
+            document.getElementById('guessInput').disabled = false;
+            document.getElementById('guessInput').focus();
+        }
+    </script>
+</body>
+</html>

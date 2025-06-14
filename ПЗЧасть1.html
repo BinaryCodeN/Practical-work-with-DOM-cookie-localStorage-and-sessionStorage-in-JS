@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отбор студентов для трудоустройства</title>
+    <link rel="stylesheet" href="ПЗ1.css">
+    
+</head>
+<body>
+    <h1>Отбор студентов для трудоустройства</h1>
+    <button onclick="filterStudents()">Отобрать студентов</button>
+    <div id="output" class="results"></div>
+
+    <script>
+        // Массивы с данными студентов
+        const group1 = [
+            { name: "Иванов", score: 85 },
+            { name: "Петров", score: 72 },
+            { name: "Сидоров", score: 91 },
+            { name: "Кузнецов", score: 68 },
+            { name: "Смирнов", score: 94 },
+            { name: "Васильев", score: 79 },
+            { name: "Павлов", score: 82 },
+            { name: "Семенов", score: 88 },
+            { name: "Голубев", score: 65 },
+            { name: "Виноградов", score: 90 }
+        ];
+        const group2 = [
+            { name: "Николаев", score: 78 },
+            { name: "Орлов", score: 83 },
+            { name: "Андреев", score: 95 },
+            { name: "Макаров", score: 81 },
+            { name: "Киселев", score: 76 },
+            { name: "Григорьев", score: 89 },
+            { name: "Тихонов", score: 92 },
+            { name: "Кудрявцев", score: 77 },
+            { name: "Белов", score: 84 },
+            { name: "Комаров", score: 80 }
+        ];
+
+        function filterStudents() {
+            const output = document.getElementById('output');
+            output.innerHTML = '';
+
+            const selectedGroup1 = group1.filter(student => student.score >= 80);
+            const selectedGroup2 = group2.filter(student => student.score >= 80);
+
+            output.innerHTML += `<p>В первой группе отобрано ${selectedGroup1.length} студентов</p>`;
+            output.innerHTML += `<p>Во второй группе отобрано ${selectedGroup2.length} студентов</p>`;
+
+            // Объединение массивов
+            const allSelected = selectedGroup1.concat(selectedGroup2);
+            output.innerHTML += `<p>Всего отобрано ${allSelected.length} студентов с баллом от 80 до 100</p>`;
+
+            let studentsList = '<h3>Отобранные студенты:</h3><ul>';
+            allSelected.forEach(student => {
+                studentsList += `<li>${student.name} - ${student.score} баллов</li>`;
+            });
+            studentsList += '</ul>';
+            output.innerHTML += studentsList;
+
+            // Расчет среднего балла
+            const totalScore = allSelected.reduce((sum, student) => sum + student.score, 0);
+            const averageScore = totalScore / allSelected.length;
+            output.innerHTML += `<p><strong>Средний балл отобранных на работу студентов: ${averageScore.toFixed(2)}</strong></p>`;
+        }
+    </script>
+</body>
+</html>
